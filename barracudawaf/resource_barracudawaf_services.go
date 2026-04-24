@@ -55,6 +55,11 @@ var (
 			"sharepoint_rewrite_support",
 			"secure_site_domain",
 		},
+		"clickjacking": {
+			"status",
+			"options",
+			"allowed_origin",
+		},
 	}
 )
 
@@ -297,6 +302,30 @@ func resourceCudaWAFServices() *schema.Resource {
 								Type: schema.TypeString,
 							},
 							Description: "Secure Site Domain",
+						},
+					},
+				},
+			},
+			"clickjacking": {
+				Type:     schema.TypeList,
+				Optional: true,
+				MaxItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"status": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Status",
+						},
+						"options": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Render Page Inside Iframe",
+						},
+						"allowed_origin": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Allowed Origin URI",
 						},
 					},
 				},

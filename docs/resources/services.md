@@ -60,6 +60,7 @@ resource "barracudawaf_services" "demo_app_1" {
 - **status** (String) Status
 - **secure_site_domain** (List) Secure Site Domain
 - **instant_ssl** (Block List) (see [below for nested schema](#nestedblock--instant_ssl))
+- **clickjacking** (Block List, Max: 1) (see [below for nested schema](#nestedblock--clickjacking))
 
 
 <a id="nestedblock--basic_security"></a>
@@ -119,3 +120,11 @@ Optional:
 - **sharepoint_rewrite_support** (String) SharePoint Rewrite Support
 - **status** (String) Status
 
+<a id="nestedblock--clickjacking"></a>
+### Nested Schema for `clickjacking`
+
+Optional:
+
+- **allowed_origin** (String) Allowed Origin URI
+- **options** (String) Render Page Inside Iframe
+- **status** (String) Status
