@@ -19,6 +19,9 @@ func resourceCudaWAFLetsEncryptCertificate() *schema.Resource {
 		Read:   resourceCudaWAFLetsEncryptCertificateRead,
 		Update: resourceCudaWAFLetsEncryptCertificateUpdate,
 		Delete: resourceCudaWAFLetsEncryptCertificateDelete,
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 
 		Schema: map[string]*schema.Schema{
 			"allow_private_key_export":   {Type: schema.TypeString, Optional: true, Description: "If set Yes, Private Key gets downloaded along with the certificate"},

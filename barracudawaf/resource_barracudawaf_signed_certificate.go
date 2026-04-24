@@ -19,6 +19,9 @@ func resourceCudaWAFSignedCertificate() *schema.Resource {
 		Read:   resourceCudaWAFSignedCertificateRead,
 		Update: resourceCudaWAFSignedCertificateUpdate,
 		Delete: resourceCudaWAFSignedCertificateDelete,
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 
 		Schema: map[string]*schema.Schema{
 			"assign_associated_key": {Type: schema.TypeString, Optional: true},
