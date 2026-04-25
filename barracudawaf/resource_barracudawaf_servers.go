@@ -161,7 +161,10 @@ func resourceCudaWAFServersCreate(d *schema.ResourceData, m interface{}) error {
 
 	log.Println("[INFO] Creating Barracuda WAF resource " + name)
 
-	resourceEndpoint := "/services/" + d.Get("parent.0").(string) + "/servers"
+	parent := d.Get("parent").([]interface{})
+	serviceName := parent[0].(string)
+
+	resourceEndpoint := "/services/" + serviceName + "/servers"
 	err := client.CreateBarracudaWAFResource(name, hydrateBarracudaWAFServersResource(d, "post", resourceEndpoint))
 
 	if err != nil {
@@ -186,7 +189,10 @@ func resourceCudaWAFServersRead(d *schema.ResourceData, m interface{}) error {
 	name := d.Id()
 	log.Println("[INFO] Fetching Barracuda WAF resource " + name)
 
-	resourceEndpoint := "/services/" + d.Get("parent.0").(string) + "/servers"
+	parent := d.Get("parent").([]interface{})
+	serviceName := parent[0].(string)
+
+	resourceEndpoint := "/services/" + serviceName + "/servers"
 	request := &APIRequest{
 		Method: "get",
 		URL:    resourceEndpoint,
@@ -227,7 +233,10 @@ func resourceCudaWAFServersUpdate(d *schema.ResourceData, m interface{}) error {
 
 	log.Println("[INFO] Updating Barracuda WAF resource " + name)
 
-	resourceEndpoint := "/services/" + d.Get("parent.0").(string) + "/servers"
+	parent := d.Get("parent").([]interface{})
+	serviceName := parent[0].(string)
+
+	resourceEndpoint := "/services/" + serviceName + "/servers"
 	err := client.UpdateBarracudaWAFResource(name, hydrateBarracudaWAFServersResource(d, "put", resourceEndpoint))
 
 	if err != nil {
@@ -252,7 +261,10 @@ func resourceCudaWAFServersDelete(d *schema.ResourceData, m interface{}) error {
 
 	log.Println("[INFO] Deleting Barracuda WAF resource " + name)
 
-	resourceEndpoint := "/services/" + d.Get("parent.0").(string) + "/servers"
+	parent := d.Get("parent").([]interface{})
+	serviceName := parent[0].(string)
+
+	resourceEndpoint := "/services/" + serviceName + "/servers"
 	request := &APIRequest{
 		Method: "delete",
 		URL:    resourceEndpoint,

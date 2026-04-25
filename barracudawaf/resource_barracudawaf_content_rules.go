@@ -61,7 +61,10 @@ func resourceCudaWAFContentRulesCreate(d *schema.ResourceData, m interface{}) er
 
 	log.Println("[INFO] Creating Barracuda WAF resource " + name)
 
-	resourceEndpoint := "/services/" + d.Get("parent.0").(string) + "/content-rules"
+	parent := d.Get("parent").([]interface{})
+	serviceName := parent[0].(string)
+
+	resourceEndpoint := "/services/" + serviceName + "/content-rules"
 	err := client.CreateBarracudaWAFResource(name, hydrateBarracudaWAFContentRulesResource(d, "post", resourceEndpoint))
 
 	if err != nil {
@@ -86,7 +89,10 @@ func resourceCudaWAFContentRulesRead(d *schema.ResourceData, m interface{}) erro
 	name := d.Id()
 	log.Println("[INFO] Fetching Barracuda WAF resource " + name)
 
-	resourceEndpoint := "/services/" + d.Get("parent.0").(string) + "/content-rules"
+	parent := d.Get("parent").([]interface{})
+	serviceName := parent[0].(string)
+
+	resourceEndpoint := "/services/" + serviceName + "/content-rules"
 	request := &APIRequest{
 		Method: "get",
 		URL:    resourceEndpoint,
@@ -127,7 +133,10 @@ func resourceCudaWAFContentRulesUpdate(d *schema.ResourceData, m interface{}) er
 
 	log.Println("[INFO] Updating Barracuda WAF resource " + name)
 
-	resourceEndpoint := "/services/" + d.Get("parent.0").(string) + "/content-rules"
+	parent := d.Get("parent").([]interface{})
+	serviceName := parent[0].(string)
+
+	resourceEndpoint := "/services/" + serviceName + "/content-rules"
 	err := client.UpdateBarracudaWAFResource(name, hydrateBarracudaWAFContentRulesResource(d, "put", resourceEndpoint))
 
 	if err != nil {
@@ -152,7 +161,10 @@ func resourceCudaWAFContentRulesDelete(d *schema.ResourceData, m interface{}) er
 
 	log.Println("[INFO] Deleting Barracuda WAF resource " + name)
 
-	resourceEndpoint := "/services/" + d.Get("parent.0").(string) + "/content-rules"
+	parent := d.Get("parent").([]interface{})
+	serviceName := parent[0].(string)
+
+	resourceEndpoint := "/services/" + serviceName + "/content-rules"
 	request := &APIRequest{
 		Method: "delete",
 		URL:    resourceEndpoint,

@@ -139,7 +139,11 @@ func resourceCudaWAFContentRuleServersCreate(d *schema.ResourceData, m interface
 
 	log.Println("[INFO] Creating Barracuda WAF resource " + name)
 
-	resourceEndpoint := "/services/" + d.Get("parent.0").(string) + "/content-rules/" + d.Get("parent.1").(string) + "/content-rule-servers"
+	parent := d.Get("parent").([]interface{})
+	serviceName := parent[0].(string)
+	contentRuleName := parent[1].(string)
+
+	resourceEndpoint := "/services/" + serviceName + "/content-rules/" + contentRuleName + "/content-rule-servers"
 	err := client.CreateBarracudaWAFResource(
 		name,
 		hydrateBarracudaWAFContentRuleServersResource(d, "post", resourceEndpoint),
@@ -167,7 +171,11 @@ func resourceCudaWAFContentRuleServersRead(d *schema.ResourceData, m interface{}
 	name := d.Id()
 	log.Println("[INFO] Fetching Barracuda WAF resource " + name)
 
-	resourceEndpoint := "/services/" + d.Get("parent.0").(string) + "/content-rules/" + d.Get("parent.1").(string) + "/content-rule-servers"
+	parent := d.Get("parent").([]interface{})
+	serviceName := parent[0].(string)
+	contentRuleName := parent[1].(string)
+
+	resourceEndpoint := "/services/" + serviceName + "/content-rules/" + contentRuleName + "/content-rule-servers"
 	request := &APIRequest{
 		Method: "get",
 		URL:    resourceEndpoint,
@@ -208,7 +216,11 @@ func resourceCudaWAFContentRuleServersUpdate(d *schema.ResourceData, m interface
 
 	log.Println("[INFO] Updating Barracuda WAF resource " + name)
 
-	resourceEndpoint := "/services/" + d.Get("parent.0").(string) + "/content-rules/" + d.Get("parent.1").(string) + "/content-rule-servers"
+	parent := d.Get("parent").([]interface{})
+	serviceName := parent[0].(string)
+	contentRuleName := parent[1].(string)
+
+	resourceEndpoint := "/services/" + serviceName + "/content-rules/" + contentRuleName + "/content-rule-servers"
 	err := client.UpdateBarracudaWAFResource(name, hydrateBarracudaWAFContentRuleServersResource(d, "put", resourceEndpoint))
 
 	if err != nil {
@@ -233,7 +245,11 @@ func resourceCudaWAFContentRuleServersDelete(d *schema.ResourceData, m interface
 
 	log.Println("[INFO] Deleting Barracuda WAF resource " + name)
 
-	resourceEndpoint := "/services/" + d.Get("parent.0").(string) + "/content-rules/" + d.Get("parent.1").(string) + "/content-rule-servers"
+	parent := d.Get("parent").([]interface{})
+	serviceName := parent[0].(string)
+	contentRuleName := parent[1].(string)
+
+	resourceEndpoint := "/services/" + serviceName + "/content-rules/" + contentRuleName + "/content-rule-servers"
 	request := &APIRequest{
 		Method: "delete",
 		URL:    resourceEndpoint,
