@@ -16,6 +16,16 @@ description: |-
 resource "barracudawaf_security_policies" "demo_security_policy_1" {
     name     = "DemoPolicy1"
     based_on = "default"
+
+    cookie_security {
+        http_only = "Yes"
+        secure_cookie = "Yes"
+    }
+
+    url_protection {
+        enable = "Enable"
+        allowed_methods = [ "GET", "POST", "HEAD" ]
+    }
 }
 ```
 
@@ -28,5 +38,181 @@ resource "barracudawaf_security_policies" "demo_security_policy_1" {
 
 ### Optional
 
+- **action_policies** (Block List) (see [below for nested schema](#nestedblock--action_policies))
 - **based_on** (String)
+- **client_profile** (Block List, Max: 1) (see [below for nested schema](#nestedblock--client_profile))
+- **cloaking** (Block List, Max: 1) (see [below for nested schema](#nestedblock--cloaking))
+- **cookie_security** (Block List, Max: 1) (see [below for nested schema](#nestedblock--cookie_security))
+- **global_acls** (Block List) (see [below for nested schema](#nestedblock--global_acls))
 - **id** (String) The ID of this resource.
+- **parameter_protection** (Block List, Max: 1) (see [below for nested schema](#nestedblock--parameter_protection))
+- **protected_data_types** (Block List) (see [below for nested schema](#nestedblock--protected_data_types))
+- **request_limits** (Block List, Max: 1) (see [below for nested schema](#nestedblock--request_limits))
+- **tarpit_profile** (Block List, Max: 1) (see [below for nested schema](#nestedblock--tarpit_profile))
+- **url_normalization** (Block List, Max: 1) (see [below for nested schema](#nestedblock--url_normalization))
+- **url_protection** (Block List, Max: 1) (see [below for nested schema](#nestedblock--url_protection))
+
+<a id="nestedblock--action_policies"></a>
+### Nested Schema for `action_policies`
+
+Optional:
+
+- **action** (String) Action
+- **deny_response** (String) Deny Response
+- **follow_up_action** (String) Follow Up Action
+- **follow_up_action_time** (String) Follow Up Action Time
+- **name** (String) Attack Action Name
+- **redirect_url** (String) Redirect URL
+- **response_page** (String) Response Page
+- **risk_score** (String) Risk Score
+
+
+<a id="nestedblock--client_profile"></a>
+### Nested Schema for `client_profile`
+
+Optional:
+
+- **client_profile** (String) Enable Client Profile Validation
+- **exception_client_fingerprints** (List of String) Exceptions
+- **high_risk_score** (String) Bad Clients
+- **medium_risk_score** (String) Suspicious Clients
+
+
+<a id="nestedblock--cloaking"></a>
+### Nested Schema for `cloaking`
+
+Optional:
+
+- **filter_response_header** (String) Filter Response Header
+- **headers_to_filter** (List of String) Headers to Filter
+- **return_codes_to_exempt** (List of String) Return Codes to Exempt
+- **suppress_return_code** (String) Suppress Return Code
+
+
+<a id="nestedblock--cookie_security"></a>
+### Nested Schema for `cookie_security`
+
+Optional:
+
+- **allow_unrecognized_cookies** (String) Allow Unrecognized Cookies
+- **cookie_max_age** (String) Cookie Max Age
+- **cookie_replay_protection_type** (String) Cookie Replay Protection Type
+- **cookies_exempted** (List of String) Cookies Exempted
+- **custom_headers** (List of String) Custom Headers
+- **days_allowed** (String) Days Allowed
+- **http_only** (String) HTTP Only
+- **same_site** (String) SameSite Attribute
+- **secure_cookie** (String) Secure Cookie
+- **tamper_proof_mode** (String) Tamper Proof Mode
+
+
+<a id="nestedblock--global_acls"></a>
+### Nested Schema for `global_acls`
+
+Optional:
+
+- **action** (String) Action
+- **comments** (String) Comments
+- **deny_response** (String) Deny Response
+- **enable** (String) Enable URL ACL
+- **extended_match** (String) Extended Match
+- **extended_match_sequence** (String) Extended Match Sequence
+- **follow_up_action** (String) Follow Up Action
+- **follow_up_action_time** (String) Follow Up Action Time
+- **name** (String) URL ACL Name
+- **redirect_url** (String) Redirect URL
+- **response_page** (String) Response Page
+- **url** (String) URL Match
+
+
+<a id="nestedblock--parameter_protection"></a>
+### Nested Schema for `parameter_protection`
+
+Optional:
+
+- **allowed_file_upload_type** (String) Allowed File Upload Type
+- **base64_decode_parameter_value** (String) Base64 Decode Parameter Value
+- **blocked_attack_types** (List of String) Blocked Attack Types
+- **custom_blocked_attack_types** (List of String) Custom Blocked Attack Types
+- **denied_metacharacters** (String) Denied Metacharacters
+- **enable** (String) Enable Parameter Protection
+- **exception_patterns** (List of String) Exception Patterns
+- **file_upload_extensions** (List of String) File Upload Extensions
+- **file_upload_mime_types** (List of String) File Upload Mime Types
+- **ignore_parameters** (List of String) Ignore Parameters
+- **maximum_instances** (String) Maximum Instances
+- **maximum_parameter_value_length** (String) Maximum Parameter Value Length
+- **maximum_upload_file_size** (String) Maximum Upload File Size
+- **validate_parameter_name** (String) Validate Parameter Name
+
+
+<a id="nestedblock--protected_data_types"></a>
+### Nested Schema for `protected_data_types`
+
+Optional:
+
+- **action** (String) Action
+- **custom_identity_theft_type** (String) Custom Identity Theft Type
+- **enable** (String) Enabled
+- **identity_theft_type** (String) Identity Theft Type
+- **initial_characters_to_keep** (String) Initial Characters to Keep
+- **name** (String) Data Theft Element Name
+- **trailing_characters_to_keep** (String) Trailing Characters to Keep
+
+
+<a id="nestedblock--request_limits"></a>
+### Nested Schema for `request_limits`
+
+Optional:
+
+- **enable** (String) Enable Request Limits
+- **max_cookie_name_length** (String) Max Cookie Name Length
+- **max_cookie_value_length** (String) Max Cookie Value Length
+- **max_header_name_length** (String) Max Header Name Length
+- **max_header_value_length** (String) Max Header Value Length
+- **max_number_of_cookies** (String) Max Number of Cookies
+- **max_number_of_headers** (String) Max Number of Headers
+- **max_query_length** (String) Max Query Length
+- **max_request_length** (String) Max Request Length
+- **max_request_line_length** (String) Max Request Line Length
+- **max_url_length** (String) Max URL Length
+
+
+<a id="nestedblock--tarpit_profile"></a>
+### Nested Schema for `tarpit_profile`
+
+Optional:
+
+- **backlog_requests_limit** (String) Backlog Requests Limit
+- **tarpit_delay_interval** (String) Tarpit Delay Interval
+- **tarpit_inactivity_timeout** (String) Tarpit Inactivity Timeout
+
+
+<a id="nestedblock--url_normalization"></a>
+### Nested Schema for `url_normalization`
+
+Optional:
+
+- **apply_double_decoding** (String) Double Decoding
+- **default_charset** (String) Default Character Set
+- **detect_response_charset** (String) Detect Response Charset
+- **normalize_special_chars** (String) Normalize Special Characters
+- **parameter_separators** (String) Parameter Separators
+
+
+<a id="nestedblock--url_protection"></a>
+### Nested Schema for `url_protection`
+
+Optional:
+
+- **allowed_content_types** (List of String) Allowed Content Types
+- **allowed_methods** (List of String) Allowed Methods
+- **blocked_attack_types** (List of String) Blocked Attack Types
+- **csrf_prevention** (String) CSRF Prevention
+- **custom_blocked_attack_types** (List of String) Custom Blocked Attack Types
+- **enable** (String) Enable URL Protection
+- **exception_patterns** (List of String) Exception Patterns
+- **max_content_length** (String) Max Content Length
+- **max_parameters** (String) Max Parameters
+- **maximum_parameter_name_length** (String) Maximum Parameter Name Length
+- **maximum_upload_files** (String) Maximum Upload Files

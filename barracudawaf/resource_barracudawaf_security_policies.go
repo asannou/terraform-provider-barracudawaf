@@ -3,13 +3,48 @@ package barracudawaf
 import (
 	"fmt"
 	"log"
+	"reflect"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 var (
-	subResourceSecurityPoliciesParams = map[string][]string{}
+	subResourceSecurityPoliciesParams = map[string][]string{
+		"cookie_security": {
+			"allow_unrecognized_cookies", "cookie_max_age", "cookie_replay_protection_type", "cookies_exempted", "custom_headers", "days_allowed", "http_only", "same_site", "secure_cookie", "tamper_proof_mode",
+		},
+		"url_protection": {
+			"allowed_content_types", "allowed_methods", "blocked_attack_types", "csrf_prevention", "custom_blocked_attack_types", "enable", "exception_patterns", "max_content_length", "max_parameters", "maximum_parameter_name_length", "maximum_upload_files",
+		},
+		"parameter_protection": {
+			"allowed_file_upload_type", "base64_decode_parameter_value", "blocked_attack_types", "custom_blocked_attack_types", "denied_metacharacters", "enable", "exception_patterns", "file_upload_extensions", "file_upload_mime_types", "ignore_parameters", "maximum_instances", "maximum_parameter_value_length", "maximum_upload_file_size", "validate_parameter_name",
+		},
+		"cloaking": {
+			"filter_response_header", "headers_to_filter", "return_codes_to_exempt", "suppress_return_code",
+		},
+		"url_normalization": {
+			"apply_double_decoding", "default_charset", "detect_response_charset", "normalize_special_chars", "parameter_separators",
+		},
+		"request_limits": {
+			"enable", "max_cookie_name_length", "max_cookie_value_length", "max_header_name_length", "max_header_value_length", "max_number_of_cookies", "max_number_of_headers", "max_query_length", "max_request_length", "max_request_line_length", "max_url_length",
+		},
+		"client_profile": {
+			"client_profile", "exception_client_fingerprints", "high_risk_score", "medium_risk_score",
+		},
+		"tarpit_profile": {
+			"backlog_requests_limit", "tarpit_delay_interval", "tarpit_inactivity_timeout",
+		},
+		"action_policies": {
+			"action", "deny_response", "follow_up_action", "follow_up_action_time", "name", "redirect_url", "response_page", "risk_score",
+		},
+		"global_acls": {
+			"action", "comments", "deny_response", "enable", "extended_match", "extended_match_sequence", "follow_up_action", "follow_up_action_time", "name", "redirect_url", "response_page", "url",
+		},
+		"protected_data_types": {
+			"action", "custom_identity_theft_type", "enable", "identity_theft_type", "initial_characters_to_keep", "name", "trailing_characters_to_keep",
+		},
+	}
 )
 
 func resourceCudaWAFSecurityPolicies() *schema.Resource {
@@ -25,6 +60,191 @@ func resourceCudaWAFSecurityPolicies() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"based_on": {Type: schema.TypeString, Optional: true},
 			"name":     {Type: schema.TypeString, Required: true, Description: "Policy Name"},
+			"cookie_security": {
+				Type:     schema.TypeList,
+				Optional: true,
+				MaxItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"allow_unrecognized_cookies":    {Type: schema.TypeString, Optional: true},
+						"cookie_max_age":                {Type: schema.TypeString, Optional: true},
+						"cookie_replay_protection_type": {Type: schema.TypeString, Optional: true},
+						"cookies_exempted":              {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+						"custom_headers":                {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+						"days_allowed":                  {Type: schema.TypeString, Optional: true},
+						"http_only":                     {Type: schema.TypeString, Optional: true},
+						"same_site":                     {Type: schema.TypeString, Optional: true},
+						"secure_cookie":                 {Type: schema.TypeString, Optional: true},
+						"tamper_proof_mode":             {Type: schema.TypeString, Optional: true},
+					},
+				},
+			},
+			"url_protection": {
+				Type:     schema.TypeList,
+				Optional: true,
+				MaxItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"allowed_content_types":         {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+						"allowed_methods":               {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+						"blocked_attack_types":          {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+						"csrf_prevention":               {Type: schema.TypeString, Optional: true},
+						"custom_blocked_attack_types":   {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+						"enable":                        {Type: schema.TypeString, Optional: true},
+						"exception_patterns":            {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+						"max_content_length":            {Type: schema.TypeString, Optional: true},
+						"max_parameters":                {Type: schema.TypeString, Optional: true},
+						"maximum_parameter_name_length": {Type: schema.TypeString, Optional: true},
+						"maximum_upload_files":          {Type: schema.TypeString, Optional: true},
+					},
+				},
+			},
+			"parameter_protection": {
+				Type:     schema.TypeList,
+				Optional: true,
+				MaxItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"allowed_file_upload_type":       {Type: schema.TypeString, Optional: true},
+						"base64_decode_parameter_value":  {Type: schema.TypeString, Optional: true},
+						"blocked_attack_types":           {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+						"custom_blocked_attack_types":    {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+						"denied_metacharacters":          {Type: schema.TypeString, Optional: true},
+						"enable":                         {Type: schema.TypeString, Optional: true},
+						"exception_patterns":             {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+						"file_upload_extensions":         {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+						"file_upload_mime_types":         {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+						"ignore_parameters":              {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+						"maximum_instances":              {Type: schema.TypeString, Optional: true},
+						"maximum_parameter_value_length": {Type: schema.TypeString, Optional: true},
+						"maximum_upload_file_size":       {Type: schema.TypeString, Optional: true},
+						"validate_parameter_name":        {Type: schema.TypeString, Optional: true},
+					},
+				},
+			},
+			"cloaking": {
+				Type:     schema.TypeList,
+				Optional: true,
+				MaxItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"filter_response_header": {Type: schema.TypeString, Optional: true},
+						"headers_to_filter":      {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+						"return_codes_to_exempt": {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+						"suppress_return_code":   {Type: schema.TypeString, Optional: true},
+					},
+				},
+			},
+			"url_normalization": {
+				Type:     schema.TypeList,
+				Optional: true,
+				MaxItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"apply_double_decoding":  {Type: schema.TypeString, Optional: true},
+						"default_charset":        {Type: schema.TypeString, Optional: true},
+						"detect_response_charset": {Type: schema.TypeString, Optional: true},
+						"normalize_special_chars": {Type: schema.TypeString, Optional: true},
+						"parameter_separators":   {Type: schema.TypeString, Optional: true},
+					},
+				},
+			},
+			"request_limits": {
+				Type:     schema.TypeList,
+				Optional: true,
+				MaxItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"enable":                  {Type: schema.TypeString, Optional: true},
+						"max_cookie_name_length":  {Type: schema.TypeString, Optional: true},
+						"max_cookie_value_length": {Type: schema.TypeString, Optional: true},
+						"max_header_name_length":  {Type: schema.TypeString, Optional: true},
+						"max_header_value_length": {Type: schema.TypeString, Optional: true},
+						"max_number_of_cookies":   {Type: schema.TypeString, Optional: true},
+						"max_number_of_headers":   {Type: schema.TypeString, Optional: true},
+						"max_query_length":        {Type: schema.TypeString, Optional: true},
+						"max_request_length":      {Type: schema.TypeString, Optional: true},
+						"max_request_line_length": {Type: schema.TypeString, Optional: true},
+						"max_url_length":          {Type: schema.TypeString, Optional: true},
+					},
+				},
+			},
+			"client_profile": {
+				Type:     schema.TypeList,
+				Optional: true,
+				MaxItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"client_profile":               {Type: schema.TypeString, Optional: true},
+						"exception_client_fingerprints": {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+						"high_risk_score":              {Type: schema.TypeString, Optional: true},
+						"medium_risk_score":            {Type: schema.TypeString, Optional: true},
+					},
+				},
+			},
+			"tarpit_profile": {
+				Type:     schema.TypeList,
+				Optional: true,
+				MaxItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"backlog_requests_limit":   {Type: schema.TypeString, Optional: true},
+						"tarpit_delay_interval":    {Type: schema.TypeString, Optional: true},
+						"tarpit_inactivity_timeout": {Type: schema.TypeString, Optional: true},
+					},
+				},
+			},
+			"action_policies": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"action":                {Type: schema.TypeString, Optional: true},
+						"deny_response":         {Type: schema.TypeString, Optional: true},
+						"follow_up_action":      {Type: schema.TypeString, Optional: true},
+						"follow_up_action_time": {Type: schema.TypeString, Optional: true},
+						"name":                  {Type: schema.TypeString, Required: true},
+						"redirect_url":          {Type: schema.TypeString, Optional: true},
+						"response_page":         {Type: schema.TypeString, Optional: true},
+						"risk_score":            {Type: schema.TypeString, Optional: true},
+					},
+				},
+			},
+			"global_acls": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"action":                {Type: schema.TypeString, Optional: true},
+						"comments":              {Type: schema.TypeString, Optional: true},
+						"deny_response":         {Type: schema.TypeString, Optional: true},
+						"enable":                {Type: schema.TypeString, Optional: true},
+						"extended_match":        {Type: schema.TypeString, Optional: true},
+						"extended_match_sequence": {Type: schema.TypeString, Optional: true},
+						"follow_up_action":      {Type: schema.TypeString, Optional: true},
+						"follow_up_action_time": {Type: schema.TypeString, Optional: true},
+						"name":                  {Type: schema.TypeString, Required: true},
+						"redirect_url":          {Type: schema.TypeString, Optional: true},
+						"response_page":         {Type: schema.TypeString, Optional: true},
+						"url":                   {Type: schema.TypeString, Optional: true},
+					},
+				},
+			},
+			"protected_data_types": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"action":                     {Type: schema.TypeString, Optional: true},
+						"custom_identity_theft_type": {Type: schema.TypeString, Optional: true},
+						"enable":                     {Type: schema.TypeString, Optional: true},
+						"identity_theft_type":        {Type: schema.TypeString, Optional: true},
+						"initial_characters_to_keep": {Type: schema.TypeString, Optional: true},
+						"name":                       {Type: schema.TypeString, Required: true},
+						"trailing_characters_to_keep": {Type: schema.TypeString, Optional: true},
+					},
+				},
+			},
 		},
 
 		Description: "`barracudawaf_security_policies` manages `Security Policies` on the Barracuda Web Application Firewall.",
@@ -182,21 +402,33 @@ func (b *BarracudaWAF) hydrateBarracudaWAFSecurityPoliciesSubResource(
 		log.Printf("[INFO] Updating Barracuda WAF sub resource (%s) (%s)", name, subResource)
 
 		for i := 0; i < subResourceParamsLength; i++ {
-			subResourcePayload := map[string]string{}
+			subResourcePayload := make(map[string]interface{})
 			suffix := fmt.Sprintf(".%d", i)
 
 			for _, param := range subResourceParams {
 				paramSuffix := fmt.Sprintf(".%s", param)
-				paramVaule := d.Get(subResource + suffix + paramSuffix).(string)
+				paramValue := d.Get(subResource + suffix + paramSuffix)
 
-				if len(paramVaule) > 0 {
-					param = strings.Replace(param, "_", "-", -1)
-					subResourcePayload[param] = paramVaule
+				if reflect.ValueOf(paramValue).Kind() == reflect.String {
+					paramValue = paramValue.(string)
+				}
+
+				if reflect.ValueOf(paramValue).Len() > 0 {
+					paramKey := strings.Replace(param, "_", "-", -1)
+					subResourcePayload[paramKey] = paramValue
+				}
+			}
+
+			subResourceURL := strings.Replace(subResource, "_", "-", -1)
+			if subResource == "global_acls" || subResource == "action_policies" || subResource == "protected_data_types" {
+				itemName, ok := subResourcePayload["name"].(string)
+				if ok && len(itemName) > 0 {
+					subResourceURL = subResourceURL + "/" + itemName
 				}
 			}
 
 			err := b.UpdateBarracudaWAFSubResource(name, endpoint, &APIRequest{
-				URL:  strings.Replace(subResource, "_", "-", -1),
+				URL:  subResourceURL,
 				Body: subResourcePayload,
 			})
 

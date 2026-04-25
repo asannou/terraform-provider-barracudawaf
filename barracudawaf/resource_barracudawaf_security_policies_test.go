@@ -12,6 +12,32 @@ var SECPOLICY_RESOURCE_CREATE = BARRACUDA_WAF_PROVIDER + `
 resource "barracudawaf_security_policies" "demo_security_policy_1" {
     name       = "DemoPolicy1"
     based_on   = "Create New"
+
+    cookie_security {
+        http_only     = "Yes"
+        secure_cookie = "Yes"
+    }
+
+    url_protection {
+        enable          = "Enable"
+        allowed_methods = [ "GET", "POST", "HEAD" ]
+    }
+
+    request_limits {
+        enable = "Yes"
+        max_url_length = "1024"
+    }
+
+    action_policies {
+        name   = "SQL Injection"
+        action = "Protect and Log"
+    }
+
+    global_acls {
+        name   = "allow_status"
+        url    = "/status"
+        action = "Allow"
+    }
 }
 `
 
@@ -25,6 +51,11 @@ func TestAccBarracudaWAFSecurityPolicy_basic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testCheckSecurityPolicyExists("DemoPolicy1"),
 					resource.TestCheckResourceAttr("barracudawaf_security_policies.demo_security_policy_1", "name", "DemoPolicy1"),
+					resource.TestCheckResourceAttr("barracudawaf_security_policies.demo_security_policy_1", "cookie_security.0.http_only", "Yes"),
+					resource.TestCheckResourceAttr("barracudawaf_security_policies.demo_security_policy_1", "url_protection.0.enable", "Enable"),
+					resource.TestCheckResourceAttr("barracudawaf_security_policies.demo_security_policy_1", "request_limits.0.max_url_length", "1024"),
+					resource.TestCheckResourceAttr("barracudawaf_security_policies.demo_security_policy_1", "action_policies.0.name", "SQL Injection"),
+					resource.TestCheckResourceAttr("barracudawaf_security_policies.demo_security_policy_1", "global_acls.0.name", "allow_status"),
 				),
 			},
 		},
