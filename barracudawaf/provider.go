@@ -46,6 +46,7 @@ func Provider() *schema.Provider {
 			"barracudawaf_self_signed_certificate":    resourceCudaWAFSelfSignedCertificate(),
 			"barracudawaf_servers":                    resourceCudaWAFServers(),
 			"barracudawaf_letsencrypt_certificate":    resourceCudaWAFLetsEncryptCertificate(),
+			"barracudawaf_admin_ip_range":             resourceCudaWAFAdminIPRange(),
 		},
 	}
 
