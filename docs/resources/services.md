@@ -38,29 +38,32 @@ resource "barracudawaf_services" "demo_app_1" {
 ### Required
 
 - **name** (String) Web Application Name
-- **ip_address** (String) VIP
-- **port** (String) Port
-- **type** (String) Type
-- **vsite** (String) Vsite
-- **address_version** (String) Version
-- **group** (String) Service Group
 
 ### Optional
 
+- **address_version** (String) Version
 - **app_id** (String) Service App Id
 - **basic_security** (Block List) (see [below for nested schema](#nestedblock--basic_security))
+- **caching** (Block List) (see [below for nested schema](#nestedblock--caching))
 - **certificate** (String)
+- **clickjacking** (Block List, Max: 1) (see [below for nested schema](#nestedblock--clickjacking))
 - **cloud_ip_select** (String)
 - **comments** (String) Comments
+- **compression** (Block List) (see [below for nested schema](#nestedblock--compression))
 - **enable_access_logs** (String) Enable Access Logs
+- **group** (String) Service Group
 - **id** (String) The ID of this resource.
+- **instant_ssl** (Block List) (see [below for nested schema](#nestedblock--instant_ssl))
+- **ip_address** (String) VIP
+- **ip_reputation** (Block List) (see [below for nested schema](#nestedblock--ip_reputation))
 - **mask** (String) Mask
+- **port** (String) Port
+- **secure_site_domain** (List of String) Secure Site Domain
 - **session_timeout** (String) Session Timeout
 - **ssl_security** (Block List) (see [below for nested schema](#nestedblock--ssl_security))
 - **status** (String) Status
-- **secure_site_domain** (List) Secure Site Domain
-- **instant_ssl** (Block List) (see [below for nested schema](#nestedblock--instant_ssl))
-- **clickjacking** (Block List, Max: 1) (see [below for nested schema](#nestedblock--clickjacking))
+- **type** (String) Type
+- **vsite** (String) Vsite
 
 
 <a id="nestedblock--basic_security"></a>
@@ -86,7 +89,8 @@ Optional:
 
 - **certificate** (String) Certificate
 - **ciphers** (String) Ciphers
-- **domain** (List) Domain
+- **create_hsts_redirect_service** (String) Specify whether the redirect service should be created when HSTS is enabled.
+- **domain** (List of String) Domain
 - **ecdsa_certificate** (String) ECDSA Certificate
 - **enable_hsts** (String) Enable HSTS
 - **enable_ocsp_stapling** (String) Enable OCSP Stapling
@@ -100,25 +104,77 @@ Optional:
 - **enable_tls_1_3** (String) TLS 1.3
 - **hsts_max_age** (String) HSTS Max-Age
 - **include_hsts_sub_domains** (String) Include HSTS Sub-Domains
-- **override_ciphers_ssl3** (List) Override ciphers for SSL 3.0
-- **override_ciphers_tls_1** (List) Override ciphers for TLS 1.0
-- **override_ciphers_tls_1_1** (List) Override ciphers for TLS 1.1
-- **override_ciphers_tls_1_2** (List) Override ciphers for TLS 1.2
-- **override_ciphers_tls_1_3** (List) Override ciphers for TLS 1.3
-- **selected_ciphers** (List) Selected Ciphers
-- **sni_certificate** (List) Domain Certificate
-- **sni_ecdsa_certificate** (List) Domain ECDSA Certificate
+- **override_ciphers_ssl3** (List of String) Override ciphers for SSL 3.0
+- **override_ciphers_tls_1** (List of String) Override ciphers for TLS 1.0
+- **override_ciphers_tls_1_1** (List of String) Override ciphers for TLS 1.1
+- **override_ciphers_tls_1_2** (List of String) Override ciphers for TLS 1.2
+- **override_ciphers_tls_1_3** (List of String) Override ciphers for TLS 1.3
+- **selected_ciphers** (List of String) Selected Ciphers
+- **sni_certificate** (List of String) Domain Certificate
+- **sni_ecdsa_certificate** (List of String) Domain ECDSA Certificate
 - **ssl_tls_presets** (String) SSL/TLS Quick Settings
 - **status** (String) Status
+
+
+<a id="nestedblock--caching"></a>
+### Nested Schema for `caching`
+
+Optional:
+
+- **cache_negative_response** (String) Cache Negative Responses
+- **expiry_age** (String) Expiry Age (minutes)
+- **file_extensions** (List of String) File Extensions
+- **ignore_request_headers** (String) Ignore Request Headers
+- **ignore_response_headers** (String) Ignore Response Headers
+- **max_size** (String) Max Size (KB)
+- **min_size** (String) Min Size (B)
+- **status** (String) Status
+
+
+<a id="nestedblock--compression"></a>
+### Nested Schema for `compression`
+
+Optional:
+
+- **content_types** (List of String) Content Types
+- **min_size** (String) Min Size (B)
+- **status** (String) Status
+- **unknown_content_types** (String) Compress Unknown Content Types
+
+
+<a id="nestedblock--ip_reputation"></a>
+### Nested Schema for `ip_reputation`
+
+Optional:
+
+- **anonymous_proxy** (String) Anonymous Proxy
+- **apply_policy_at** (String) Apply Policy at
+- **barracuda_reputation_blocklist** (String) Barracuda Reputation Blocklist
+- **block_unclassified_ips** (String) Unrecognized IP
+- **check_registered_country** (String) Check Registered Country
+- **custom_blacklisted_ip_status** (String) Custom IP List
+- **datacenter_ip** (String) DataCenter IP
+- **enable_ip_reputation_filter** (String) Enable IP Reputation Filter
+- **fake_crawler** (String) Fake Crawler
+- **geo_pool** (String) Geo Pool
+- **geoip_action** (String) Action
+- **geoip_enable_logging** (String) Enable Logging
+- **known_http_attack_sources** (String) Known HTTP Attack Sources
+- **known_ssh_attack_sources** (String) Known SSH Attack Sources
+- **public_proxy** (String) Public Proxy
+- **satellite_provider** (String) Satellite Provider
+- **tor_nodes** (String) TOR Nodes
+
 
 <a id="nestedblock--instant_ssl"></a>
 ### Nested Schema for `instant_ssl`
 
 Optional:
 
-- **secure_site_domain** (List) Secure Site Domain
+- **secure_site_domain** (List of String) Secure Site Domain
 - **sharepoint_rewrite_support** (String) SharePoint Rewrite Support
 - **status** (String) Status
+
 
 <a id="nestedblock--clickjacking"></a>
 ### Nested Schema for `clickjacking`

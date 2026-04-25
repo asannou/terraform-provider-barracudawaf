@@ -14,10 +14,8 @@ description: |-
 
 ```terraform
 resource "barracudawaf_security_policies" "demo_security_policy_1" {
-    name       = "DemoPolicy1"
-    based_on   = "Create New"
-    
-    depends_on = [ barracudawaf_servers.demo_server_1 ]
+    name     = "DemoPolicy1"
+    based_on = "default"
 }
 ```
 
@@ -27,10 +25,8 @@ resource "barracudawaf_security_policies" "demo_security_policy_1" {
 ### Required
 
 - **name** (String) Policy Name
-- **based_on** (String)
 
 ### Optional
 
+- **based_on** (String)
 - **id** (String) The ID of this resource.
-
-

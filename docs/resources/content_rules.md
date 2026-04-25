@@ -46,5 +46,3 @@ resource "barracudawaf_content_rules" "demo_rule_group_1" {
 - **mode** (String) Mode
 - **status** (String) Status
 - **web_firewall_policy** (String) Web Firewall Policy
-
-
