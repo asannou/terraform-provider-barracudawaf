@@ -57,15 +57,21 @@ The Terraform provider can be used to configure the following resources on the B
 6)  Security Policies
 
 7)  Services
-      Basic security , SSL policy , Instant SSL
+      Basic security , SSL policy , Instant SSL, Caching, Compression, IP Reputation, Clickjacking
 
 8)  Servers
-      SSL policy, Connection pooling
+      SSL policy, Connection pooling, Load Balancing
 
 9)  Content rules
 
 10) Content rule servers
       SSL policy, Connection pooling
+
+11) Admin IP Range
+
+12) Response Pages
+
+13) Vsites
 ```
 
 ---
@@ -87,13 +93,19 @@ Following is the sequence that should be followed with the supported config reso
 
 5.  Security policy
 
-6.  Services
-      6.1 Servers
+6.  Admin IP Range
 
-      6.2 Content Rules
-        6.2.1 Content Rule Servers
+7.  Response Pages
 
-      6.3 Lets Encrypt Certificate
+8.  Vsites
+
+9.  Services
+      9.1 Servers
+
+      9.2 Content Rules
+        9.2.1 Content Rule Servers
+
+      9.3 Lets Encrypt Certificate
 ```
 
 **Example1** ( Resource sequence and depends_on usage)  :

@@ -13,11 +13,9 @@ description: |-
 ## Example Usage
 
 ```terraform
-resource "barracudawaf_trusted_ca_certificate" "demo_trusted_ca_cert_1" {
-  name        = "DemoTrustedCACert1"
-  certificate = "<base_64_encoded_content>"
-  
-  depends_on  = [ barracudawaf_xxxx.xxxx ]
+resource "barracudawaf_trusted_ca_certificate" "demo_trusted_ca_cert" {
+    name        = "DemoTrustedCACert"
+    certificate = "<base_64_encoded_content>"
 }
 ```
 
@@ -27,12 +25,8 @@ resource "barracudawaf_trusted_ca_certificate" "demo_trusted_ca_cert_1" {
 ### Required
 
 - **name** (String) Certificate Name
-- **certificate** (String)
 
 ### Optional
 
+- **certificate** (String)
 - **id** (String) The ID of this resource.
-
-~> **Note** Creating a Terraform plan for updating the certificate for a service has a dependency. The certificate creation should be completed prior to the service update, without which the operation would result in an error. Only after this step can the old certificate be deleted.
-
-

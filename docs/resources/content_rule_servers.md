@@ -28,21 +28,30 @@ resource "barracudawaf_content_rule_servers" "demo_rule_group_server_1" {
 
 ### Required
 
-- **name** (String) Web Server Name
-- **ip_address** (String) IP Address
-- **identifier** (String) Identifier:
-- **port** (String) Port
-- **address_version** (String) Version
 - **parent** (List of String)
 
 ### Optional
 
+- **address_version** (String) Version
 - **comments** (String) Comments
+- **connection_pooling** (Block List) (see [below for nested schema](#nestedblock--connection_pooling))
 - **hostname** (String) Hostname
 - **id** (String) The ID of this resource.
+- **identifier** (String) Identifier:
+- **ip_address** (String) IP Address
+- **name** (String) Web Server Name
+- **port** (String) Port
 - **ssl_policy** (Block List) (see [below for nested schema](#nestedblock--ssl_policy))
-- **connection_pooling** (Block List) (see [below for nested schema](#nestedblock--connection_pooling))
 - **status** (String) Status
+
+
+<a id="nestedblock--connection_pooling"></a>
+### Nested Schema for `connection_pooling`
+
+Optional:
+
+- **enable_connection_pooling** (String) Enable Connection Pooling
+- **keepalive_timeout** (String) Keepalive Timeout
 
 
 <a id="nestedblock--ssl_policy"></a>
@@ -60,12 +69,3 @@ Optional:
 - **enable_tls_1_2** (String) TLS 1.2
 - **enable_tls_1_3** (String) TLS 1.3
 - **validate_certificate** (String) Validate Server Certificate
-
-
-<a id="nestedblock--connection_pooling"></a>
-### Nested Schema for `connection_pooling`
-
-Optional:
-
-- **enable_connection_pooling** (String) Enable Connection Pooling
-- **keepalive_timeout** (String) Keepalive Timeout
