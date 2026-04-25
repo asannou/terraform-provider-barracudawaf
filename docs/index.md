@@ -72,6 +72,32 @@ The Terraform provider can be used to configure the following resources on the B
 12) Response Pages
 
 13) Vsites
+
+14) Administrator roles
+
+15) Local users
+
+16) Local groups
+
+17) JSON security policies
+
+18) JSON profiles
+
+19) JSON key profiles
+
+20) DDoS policies
+
+21) CSP policies
+
+22) Data theft protection
+
+23) Custom referer bots
+
+24) Custom IP blocklist
+
+25) Allow or deny clients
+
+26) GEO pools
 ```
 
 ---
@@ -99,13 +125,37 @@ Following is the sequence that should be followed with the supported config reso
 
 8.  Vsites
 
-9.  Services
-      9.1 Servers
+9.  Administrator roles
 
-      9.2 Content Rules
-        9.2.1 Content Rule Servers
+10. Local groups
+      10.1 Local users
 
-      9.3 Lets Encrypt Certificate
+11. JSON security policies
+
+12. GEO pools
+
+13. Custom IP blocklist
+
+14. Custom referer bots
+
+15. Services
+      15.1 Servers
+
+      15.2 Content Rules
+        15.2.1 Content Rule Servers
+
+      15.3 Lets Encrypt Certificate
+
+      15.4 JSON profiles
+        15.4.1 JSON key profiles
+
+      15.5 DDoS policies
+
+      15.6 CSP policies
+
+      15.7 Allow or deny clients
+
+16. Data theft protection (requires Security Policy)
 ```
 
 **Example1** ( Resource sequence and depends_on usage)  :
