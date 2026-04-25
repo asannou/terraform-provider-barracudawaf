@@ -4,13 +4,53 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"reflect"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 var (
-	subResourceContentRulesParams = map[string][]string{}
+	subResourceContentRulesParams = map[string][]string{
+		"caching": {
+			"cache_negative_responses",
+			"expiry_age",
+			"file_extensions",
+			"ignore_request_headers",
+			"ignore_response_headers",
+			"max_size",
+			"min_size",
+			"status",
+		},
+		"compression": {
+			"compress_unknown_content_types",
+			"content_types",
+			"min_size",
+			"status",
+		},
+		"load_balancing": {
+			"cookie_age",
+			"failover_method",
+			"header_name",
+			"lb_algorithm",
+			"parameter_name",
+			"persistence_cookie_domain",
+			"persistence_cookie_name",
+			"persistence_cookie_path",
+			"persistence_idle_timeout",
+			"persistence_method",
+			"source_ip_netmask",
+		},
+		"captcha_settings": {
+			"recaptcha_type",
+			"rg_recaptcha_domain",
+			"rg_recaptcha_site_key",
+			"rg_recaptcha_site_secret",
+		},
+		"advanced_client_analysis": {
+			"advanced_analysis",
+		},
+	}
 )
 
 func resourceCudaWAFContentRules() *schema.Resource {
@@ -47,6 +87,79 @@ func resourceCudaWAFContentRules() *schema.Resource {
 				Type:     schema.TypeList,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 				Required: true,
+			},
+			"caching": {
+				Type:     schema.TypeList,
+				Optional: true,
+				MaxItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"cache_negative_responses": {Type: schema.TypeString, Optional: true},
+						"expiry_age":               {Type: schema.TypeString, Optional: true},
+						"file_extensions":          {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+						"ignore_request_headers":   {Type: schema.TypeString, Optional: true},
+						"ignore_response_headers":  {Type: schema.TypeString, Optional: true},
+						"max_size":                 {Type: schema.TypeString, Optional: true},
+						"min_size":                 {Type: schema.TypeString, Optional: true},
+						"status":                   {Type: schema.TypeString, Optional: true},
+					},
+				},
+			},
+			"compression": {
+				Type:     schema.TypeList,
+				Optional: true,
+				MaxItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"compress_unknown_content_types": {Type: schema.TypeString, Optional: true},
+						"content_types":                  {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+						"min_size":                       {Type: schema.TypeString, Optional: true},
+						"status":                         {Type: schema.TypeString, Optional: true},
+					},
+				},
+			},
+			"load_balancing": {
+				Type:     schema.TypeList,
+				Optional: true,
+				MaxItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"cookie_age":                {Type: schema.TypeString, Optional: true},
+						"failover_method":           {Type: schema.TypeString, Optional: true},
+						"header_name":               {Type: schema.TypeString, Optional: true},
+						"lb_algorithm":              {Type: schema.TypeString, Optional: true},
+						"parameter_name":            {Type: schema.TypeString, Optional: true},
+						"persistence_cookie_domain": {Type: schema.TypeString, Optional: true},
+						"persistence_cookie_name":   {Type: schema.TypeString, Optional: true},
+						"persistence_cookie_path":   {Type: schema.TypeString, Optional: true},
+						"persistence_idle_timeout":  {Type: schema.TypeString, Optional: true},
+						"persistence_method":        {Type: schema.TypeString, Optional: true},
+						"source_ip_netmask":         {Type: schema.TypeString, Optional: true},
+					},
+				},
+			},
+			"captcha_settings": {
+				Type:     schema.TypeList,
+				Optional: true,
+				MaxItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"recaptcha_type":           {Type: schema.TypeString, Optional: true},
+						"rg_recaptcha_domain":      {Type: schema.TypeString, Optional: true},
+						"rg_recaptcha_site_key":    {Type: schema.TypeString, Optional: true},
+						"rg_recaptcha_site_secret": {Type: schema.TypeString, Optional: true, Sensitive: true},
+					},
+				},
+			},
+			"advanced_client_analysis": {
+				Type:     schema.TypeList,
+				Optional: true,
+				MaxItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"advanced_analysis": {Type: schema.TypeString, Optional: true},
+					},
+				},
 			},
 		},
 
@@ -229,21 +342,27 @@ func (b *BarracudaWAF) hydrateBarracudaWAFContentRulesSubResource(
 		log.Printf("[INFO] Updating Barracuda WAF sub resource (%s) (%s)", name, subResource)
 
 		for i := 0; i < subResourceParamsLength; i++ {
-			subResourcePayload := map[string]string{}
+			subResourcePayload := make(map[string]interface{})
 			suffix := fmt.Sprintf(".%d", i)
 
 			for _, param := range subResourceParams {
 				paramSuffix := fmt.Sprintf(".%s", param)
-				paramVaule := d.Get(subResource + suffix + paramSuffix).(string)
+				paramVaule := d.Get(subResource + suffix + paramSuffix)
 
-				if len(paramVaule) > 0 {
+				if reflect.ValueOf(paramVaule).Len() > 0 {
 					param = strings.Replace(param, "_", "-", -1)
 					subResourcePayload[param] = paramVaule
 				}
 			}
 
+			// Special handling for captcha_settings endpoint
+			url := strings.Replace(subResource, "_", "-", -1)
+			if subResource == "captcha_settings" {
+				url = "rg-captcha-settings"
+			}
+
 			err := b.UpdateBarracudaWAFSubResource(name, endpoint, &APIRequest{
-				URL:  strings.Replace(subResource, "_", "-", -1),
+				URL:  url,
 				Body: subResourcePayload,
 			})
 
