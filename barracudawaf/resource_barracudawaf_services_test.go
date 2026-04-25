@@ -33,6 +33,23 @@ resource "barracudawaf_services" "demo_app_1" {
 	basic_security {
 		mode   = "Active"
 	}
+
+    ssl_security {
+        status                       = "On"
+        create_hsts_redirect_service = "No"
+    }
+
+    caching {
+        status = "On"
+    }
+
+    compression {
+        status = "On"
+    }
+
+    ip_reputation {
+        enable_ip_reputation_filter = "On"
+    }
 }
 `
 
@@ -50,6 +67,10 @@ func TestAccBarracudaWAFService_basic(t *testing.T) {
 					resource.TestCheckResourceAttr("barracudawaf_services.demo_app_1", "status", "On"),
 					resource.TestCheckResourceAttr("barracudawaf_services.demo_app_1", "vsite", "default"),
 					resource.TestCheckResourceAttr("barracudawaf_services.demo_app_1", "name", "DemoApp1"),
+					resource.TestCheckResourceAttr("barracudawaf_services.demo_app_1", "ssl_security.0.create_hsts_redirect_service", "No"),
+					resource.TestCheckResourceAttr("barracudawaf_services.demo_app_1", "caching.0.status", "On"),
+					resource.TestCheckResourceAttr("barracudawaf_services.demo_app_1", "compression.0.status", "On"),
+					resource.TestCheckResourceAttr("barracudawaf_services.demo_app_1", "ip_reputation.0.enable_ip_reputation_filter", "On"),
 				),
 			},
 		},
