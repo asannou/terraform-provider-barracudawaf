@@ -27,6 +27,10 @@ var (
 			"keepalive_timeout",
 			"enable_connection_pooling",
 		},
+		"load_balancing": {
+			"backup_server",
+			"weight",
+		},
 	}
 )
 
@@ -117,6 +121,24 @@ func resourceCudaWAFServers() *schema.Resource {
 							Type:        schema.TypeString,
 							Optional:    true,
 							Description: "Enable Connection Pooling",
+						},
+					},
+				},
+			},
+			"load_balancing": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"backup_server": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Backup Appliance",
+						},
+						"weight": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "WRR Weight",
 						},
 					},
 				},

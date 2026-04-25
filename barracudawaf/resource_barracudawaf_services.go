@@ -49,6 +49,42 @@ var (
 			"enable_strict_sni_check",
 			"status",
 			"ssl_tls_presets",
+			"create_hsts_redirect_service",
+		},
+		"caching": {
+			"cache_negative_response",
+			"expiry_age",
+			"file_extensions",
+			"ignore_request_headers",
+			"ignore_response_headers",
+			"max_size",
+			"min_size",
+			"status",
+		},
+		"compression": {
+			"content_types",
+			"min_size",
+			"status",
+			"unknown_content_types",
+		},
+		"ip_reputation": {
+			"anonymous_proxy",
+			"apply_policy_at",
+			"barracuda_reputation_blocklist",
+			"block_unclassified_ips",
+			"check_registered_country",
+			"custom_blacklisted_ip_status",
+			"datacenter_ip",
+			"enable_ip_reputation_filter",
+			"fake_crawler",
+			"geo_pool",
+			"geoip_action",
+			"geoip_enable_logging",
+			"known_http_attack_sources",
+			"known_ssh_attack_sources",
+			"public_proxy",
+			"satellite_provider",
+			"tor_nodes",
 		},
 		"instant_ssl": {
 			"status",
@@ -271,6 +307,186 @@ func resourceCudaWAFServices() *schema.Resource {
 							Type:        schema.TypeString,
 							Optional:    true,
 							Description: "SSL/TLS Quick Settings",
+						},
+						"create_hsts_redirect_service": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Specify whether the redirect service should be created when HSTS is enabled.",
+						},
+					},
+				},
+			},
+			"caching": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"cache_negative_response": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Cache Negative Responses",
+						},
+						"expiry_age": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Expiry Age (minutes)",
+						},
+						"file_extensions": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+							Description: "File Extensions",
+						},
+						"ignore_request_headers": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Ignore Request Headers",
+						},
+						"ignore_response_headers": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Ignore Response Headers",
+						},
+						"max_size": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Max Size (KB)",
+						},
+						"min_size": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Min Size (B)",
+						},
+						"status": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Status",
+						},
+					},
+				},
+			},
+			"compression": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"content_types": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+							Description: "Content Types",
+						},
+						"min_size": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Min Size (B)",
+						},
+						"status": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Status",
+						},
+						"unknown_content_types": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Compress Unknown Content Types",
+						},
+					},
+				},
+			},
+			"ip_reputation": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"anonymous_proxy": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Anonymous Proxy",
+						},
+						"apply_policy_at": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Apply Policy at",
+						},
+						"barracuda_reputation_blocklist": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Barracuda Reputation Blocklist",
+						},
+						"block_unclassified_ips": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Unrecognized IP",
+						},
+						"check_registered_country": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Check Registered Country",
+						},
+						"custom_blacklisted_ip_status": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Custom IP List",
+						},
+						"datacenter_ip": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "DataCenter IP",
+						},
+						"enable_ip_reputation_filter": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Enable IP Reputation Filter",
+						},
+						"fake_crawler": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Fake Crawler",
+						},
+						"geo_pool": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Geo Pool",
+						},
+						"geoip_action": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Action",
+						},
+						"geoip_enable_logging": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Enable Logging",
+						},
+						"known_http_attack_sources": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Known HTTP Attack Sources",
+						},
+						"known_ssh_attack_sources": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Known SSH Attack Sources",
+						},
+						"public_proxy": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Public Proxy",
+						},
+						"satellite_provider": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "Satellite Provider",
+						},
+						"tor_nodes": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "TOR Nodes",
 						},
 					},
 				},

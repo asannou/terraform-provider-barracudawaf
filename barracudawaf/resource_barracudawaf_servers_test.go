@@ -31,6 +31,11 @@ resource "barracudawaf_servers" "demo_server_1" {
     comments        = "Creating the Demo Server"
     parent          = [ "DemoApp1" ]
 
+    load_balancing {
+        backup_server = "No"
+        weight        = "1"
+    }
+
     depends_on = [ barracudawaf_services.demo_app_1 ]
 }
 `
@@ -49,6 +54,8 @@ func TestAccBarracudaWAFServer_basic(t *testing.T) {
 					resource.TestCheckResourceAttr("barracudawaf_servers.demo_server_1", "status", "In Service"),
 					resource.TestCheckResourceAttr("barracudawaf_servers.demo_server_1", "address_version", "IPv4"),
 					resource.TestCheckResourceAttr("barracudawaf_servers.demo_server_1", "identifier", "IP Address"),
+					resource.TestCheckResourceAttr("barracudawaf_servers.demo_server_1", "load_balancing.0.backup_server", "No"),
+					resource.TestCheckResourceAttr("barracudawaf_servers.demo_server_1", "load_balancing.0.weight", "1"),
 				),
 			},
 		},
