@@ -19,6 +19,9 @@ func resourceCudaWAFSelfSignedCertificate() *schema.Resource {
 		Read:   resourceCudaWAFSelfSignedCertificateRead,
 		Update: resourceCudaWAFSelfSignedCertificateUpdate,
 		Delete: resourceCudaWAFSelfSignedCertificateDelete,
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 
 		Schema: map[string]*schema.Schema{
 			"city":                {Type: schema.TypeString, Optional: true, Description: "Locality Name"},

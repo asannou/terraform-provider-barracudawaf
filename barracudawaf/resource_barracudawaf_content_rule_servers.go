@@ -1,6 +1,7 @@
 package barracudawaf
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"strings"
@@ -35,6 +36,17 @@ func resourceCudaWAFContentRuleServers() *schema.Resource {
 		Read:   resourceCudaWAFContentRuleServersRead,
 		Update: resourceCudaWAFContentRuleServersUpdate,
 		Delete: resourceCudaWAFContentRuleServersDelete,
+		Importer: &schema.ResourceImporter{
+			StateContext: func(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
+				parts := strings.Split(d.Id(), "/")
+				if len(parts) != 3 {
+					return nil, fmt.Errorf("invalid ID specified. Supposed to be <service_name>/<rule_name>/<server_name>")
+				}
+				d.Set("parent", []string{parts[0], parts[1]})
+				d.SetId(parts[2])
+				return []*schema.ResourceData{d}, nil
+			},
+		},
 
 		Schema: map[string]*schema.Schema{
 			"comments":        {Type: schema.TypeString, Optional: true, Description: "Comments"},

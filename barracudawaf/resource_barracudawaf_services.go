@@ -69,6 +69,9 @@ func resourceCudaWAFServices() *schema.Resource {
 		Read:   resourceCudaWAFServicesRead,
 		Update: resourceCudaWAFServicesUpdate,
 		Delete: resourceCudaWAFServicesDelete,
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 
 		Schema: map[string]*schema.Schema{
 			"address_version":    {Type: schema.TypeString, Optional: true, Description: "Version"},

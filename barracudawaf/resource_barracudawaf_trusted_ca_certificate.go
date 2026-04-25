@@ -18,6 +18,9 @@ func resourceCudaWAFTrustedCaCertificate() *schema.Resource {
 		Read:   resourceCudaWAFTrustedCaCertificateRead,
 		Update: resourceCudaWAFTrustedCaCertificateUpdate,
 		Delete: resourceCudaWAFTrustedCaCertificateDelete,
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 
 		Schema: map[string]*schema.Schema{
 			"name":        {Type: schema.TypeString, Required: true, Description: "Certificate Name"},

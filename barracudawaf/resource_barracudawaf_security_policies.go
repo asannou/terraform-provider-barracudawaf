@@ -18,6 +18,9 @@ func resourceCudaWAFSecurityPolicies() *schema.Resource {
 		Read:   resourceCudaWAFSecurityPoliciesRead,
 		Update: resourceCudaWAFSecurityPoliciesUpdate,
 		Delete: resourceCudaWAFSecurityPoliciesDelete,
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 
 		Schema: map[string]*schema.Schema{
 			"based_on": {Type: schema.TypeString, Optional: true},

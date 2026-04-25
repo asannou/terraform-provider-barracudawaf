@@ -1,6 +1,7 @@
 package barracudawaf
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"strings"
@@ -18,6 +19,17 @@ func resourceCudaWAFContentRules() *schema.Resource {
 		Read:   resourceCudaWAFContentRulesRead,
 		Update: resourceCudaWAFContentRulesUpdate,
 		Delete: resourceCudaWAFContentRulesDelete,
+		Importer: &schema.ResourceImporter{
+			StateContext: func(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
+				parts := strings.Split(d.Id(), "/")
+				if len(parts) != 2 {
+					return nil, fmt.Errorf("invalid ID specified. Supposed to be <service_name>/<rule_name>")
+				}
+				d.Set("parent", []string{parts[0]})
+				d.SetId(parts[1])
+				return []*schema.ResourceData{d}, nil
+			},
+		},
 
 		Schema: map[string]*schema.Schema{
 			"access_log":              {Type: schema.TypeString, Optional: true, Description: "Access Log"},
