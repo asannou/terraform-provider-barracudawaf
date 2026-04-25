@@ -18,11 +18,15 @@ func resourceCudaWAFAdminIPRange() *schema.Resource {
 		Read:   resourceCudaWAFAdminIPRangeRead,
 		Update: resourceCudaWAFAdminIPRangeUpdate,
 		Delete: resourceCudaWAFAdminIPRangeDelete,
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 
 		Schema: map[string]*schema.Schema{
 			"ip_address": {
 				Type:        schema.TypeString,
 				Required:    true,
+				ForceNew:    true,
 				Description: "New IP Address",
 			},
 			"netmask": {
