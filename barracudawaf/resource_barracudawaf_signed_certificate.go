@@ -113,17 +113,45 @@ func resourceCudaWAFSignedCertificateRead(d *schema.ResourceData, m interface{})
 		return nil
 	}
 
+	found := false
 	for _, dataItems = range resources.Data {
 		if dataItems["name"] == name {
+			found = true
 			break
 		}
 	}
 
-	if dataItems["name"] != name {
+	if !found {
 		return fmt.Errorf("Barracuda WAF resource (%s) not found on the system", name)
 	}
 
 	d.Set("name", name)
+
+	payload := map[string]string{
+		"assign_associated_key":     "assign-associated-key",
+		"signed_certificate":        "signed-certificate",
+		"certificate_type":          "certificate-type",
+		"download_type":             "download-type",
+		"intermediary_certificates": "intermediary-certificates",
+		"auto_renew_cert":           "auto-renew-cert",
+		"common_name":               "common-name",
+		"expiry":                    "expiry",
+		"key_type":                  "key-type",
+		"allow_private_key_export":  "allow-private-key-export",
+		"schedule_renewal_day":      "schedule-renewal-day",
+		"serial":                    "serial",
+	}
+
+	for tfKey, apiKey := range payload {
+		if val, ok := dataItems[apiKey]; ok && val != nil {
+			if reflect.TypeOf(val).Kind() == reflect.Slice {
+				d.Set(tfKey, val)
+			} else {
+				d.Set(tfKey, fmt.Sprintf("%v", val))
+			}
+		}
+	}
+
 	return nil
 }
 

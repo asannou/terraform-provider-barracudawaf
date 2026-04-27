@@ -86,17 +86,20 @@ func resourceCudaWAFTrustedCaCertificateRead(d *schema.ResourceData, m interface
 		return nil
 	}
 
+	found := false
 	for _, dataItems = range resources.Data {
 		if dataItems["name"] == name {
+			found = true
 			break
 		}
 	}
 
-	if dataItems["name"] != name {
+	if !found {
 		return fmt.Errorf("Barracuda WAF resource (%s) not found on the system", name)
 	}
 
 	d.Set("name", name)
+	d.Set("certificate", dataItems["certificate"])
 	return nil
 }
 
