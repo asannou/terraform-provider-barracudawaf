@@ -96,17 +96,39 @@ func resourceCudaWAFLetsEncryptCertificateRead(d *schema.ResourceData, m interfa
 		return nil
 	}
 
+	found := false
 	for _, dataItems = range resources.Data {
 		if dataItems["name"] == name {
+			found = true
 			break
 		}
 	}
 
-	if dataItems["name"] != name {
+	if !found {
 		return fmt.Errorf("Barracuda WAF resource (%s) not found on the system", name)
 	}
 
 	d.Set("name", name)
+
+	payload := map[string]string{
+		"allow_private_key_export":   "allow-private-key-export",
+		"auto_renew_cert":            "auto-renew-cert",
+		"common_name":                "common-name",
+		"multi_cert_trusted_service": "multi-cert-trusted-service",
+		"schedule_renewal_day":       "schedule-renewal-day",
+		"san_cert":                   "san-cert",
+	}
+
+	for tfKey, apiKey := range payload {
+		if val, ok := dataItems[apiKey]; ok && val != nil {
+			if reflect.TypeOf(val).Kind() == reflect.Slice {
+				d.Set(tfKey, val)
+			} else {
+				d.Set(tfKey, fmt.Sprintf("%v", val))
+			}
+		}
+	}
+
 	return nil
 }
 

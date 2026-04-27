@@ -225,17 +225,83 @@ func resourceCudaWAFContentRulesRead(d *schema.ResourceData, m interface{}) erro
 		return nil
 	}
 
+	found := false
 	for _, dataItems = range resources.Data {
 		if dataItems["name"] == name {
+			found = true
 			break
 		}
 	}
 
-	if dataItems["name"] != name {
+	if !found {
 		return fmt.Errorf("Barracuda WAF resource (%s) not found on the system", name)
 	}
 
 	d.Set("name", name)
+
+	payload := map[string]string{
+		"access_log":              "access-log",
+		"app_id":                  "app-id",
+		"comments":                "comments",
+		"host_match":              "host-match",
+		"status":                  "status",
+		"extended_match":          "extended-match",
+		"extended_match_sequence": "extended-match-sequence",
+		"mode":                    "mode",
+		"url_match":               "url-match",
+		"web_firewall_policy":     "web-firewall-policy",
+	}
+
+	for tfKey, apiKey := range payload {
+		if val, ok := dataItems[apiKey]; ok && val != nil {
+			d.Set(tfKey, fmt.Sprintf("%v", val))
+		}
+	}
+
+	// Read sub-resources
+	for subResource, subResourceParams := range subResourceContentRulesParams {
+		subResourceURL := strings.Replace(subResource, "_", "-", -1)
+		if subResource == "captcha_settings" {
+			subResourceURL = "rg-captcha-settings"
+		}
+
+		subResourceEndpoint := fmt.Sprintf("%s/%s/%s", resourceEndpoint, name, subResourceURL)
+		subRequest := &APIRequest{
+			Method: "get",
+			URL:    subResourceEndpoint,
+		}
+
+		subResources, err := client.GetBarracudaWAFResource(name, subRequest)
+		if err != nil {
+			log.Printf("[ERROR] Unable to Retrieve Barracuda WAF sub-resource (%s) (%v) ", subResource, err)
+			continue
+		}
+
+		if subResources.Data == nil {
+			continue
+		}
+
+		var subResourceList []interface{}
+		for _, subDataItems := range subResources.Data {
+			subMap := make(map[string]interface{})
+			for _, param := range subResourceParams {
+				apiParam := strings.Replace(param, "_", "-", -1)
+				if val, ok := subDataItems[apiParam]; ok && val != nil {
+					if reflect.TypeOf(val).Kind() == reflect.Slice {
+						subMap[param] = val
+					} else {
+						subMap[param] = fmt.Sprintf("%v", val)
+					}
+				}
+			}
+			subResourceList = append(subResourceList, subMap)
+		}
+
+		if len(subResourceList) > 0 {
+			d.Set(subResource, subResourceList)
+		}
+	}
+
 	return nil
 }
 

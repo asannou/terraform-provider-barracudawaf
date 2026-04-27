@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"reflect"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -212,17 +213,79 @@ func resourceCudaWAFServersRead(d *schema.ResourceData, m interface{}) error {
 		return nil
 	}
 
+	found := false
 	for _, dataItems = range resources.Data {
 		if dataItems["name"] == name {
+			found = true
 			break
 		}
 	}
 
-	if dataItems["name"] != name {
+	if !found {
 		return fmt.Errorf("Barracuda WAF resource (%s) not found on the system", name)
 	}
 
 	d.Set("name", name)
+
+	payload := map[string]string{
+		"address_version": "address-version",
+		"comments":        "comments",
+		"hostname":        "hostname",
+		"identifier":      "identifier",
+		"ip_address":      "ip-address",
+		"port":            "port",
+		"status":          "status",
+	}
+
+	for tfKey, apiKey := range payload {
+		if val, ok := dataItems[apiKey]; ok && val != nil {
+			if reflect.TypeOf(val).Kind() == reflect.Slice {
+				d.Set(tfKey, val)
+			} else {
+				d.Set(tfKey, fmt.Sprintf("%v", val))
+			}
+		}
+	}
+
+	// Read sub-resources
+	for subResource, subResourceParams := range subResourceServersParams {
+		subResourceEndpoint := fmt.Sprintf("%s/%s/%s", resourceEndpoint, name, strings.Replace(subResource, "_", "-", -1))
+		subRequest := &APIRequest{
+			Method: "get",
+			URL:    subResourceEndpoint,
+		}
+
+		subResources, err := client.GetBarracudaWAFResource(name, subRequest)
+		if err != nil {
+			log.Printf("[ERROR] Unable to Retrieve Barracuda WAF sub-resource (%s) (%v) ", subResource, err)
+			continue
+		}
+
+		if subResources.Data == nil {
+			continue
+		}
+
+		var subResourceList []interface{}
+		for _, subDataItems := range subResources.Data {
+			subMap := make(map[string]interface{})
+			for _, param := range subResourceParams {
+				apiParam := strings.Replace(param, "_", "-", -1)
+				if val, ok := subDataItems[apiParam]; ok && val != nil {
+					if reflect.TypeOf(val).Kind() == reflect.Slice {
+						subMap[param] = val
+					} else {
+						subMap[param] = fmt.Sprintf("%v", val)
+					}
+				}
+			}
+			subResourceList = append(subResourceList, subMap)
+		}
+
+		if len(subResourceList) > 0 {
+			d.Set(subResource, subResourceList)
+		}
+	}
+
 	return nil
 }
 
