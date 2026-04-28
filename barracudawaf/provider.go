@@ -80,6 +80,7 @@ func Provider() *schema.Provider {
 			"barracudawaf_access_rule":                resourceCudaWAFAccessRule(),
 			"barracudawaf_header_acl":                 resourceCudaWAFHeaderACL(),
 			"barracudawaf_form_spam":                  resourceCudaWAFFormSpam(),
+			"barracudawaf_web_scraping_policy":        resourceCudaWAFWebScrapingPolicy(),
 		},
 	}
 
