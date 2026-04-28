@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"sort"
 	"strings"
 	"time"
 )
@@ -320,4 +321,29 @@ func jsonMarshal(t interface{}) ([]byte, error) {
 	encoder.SetEscapeHTML(false)
 	err := encoder.Encode(t)
 	return buffer.Bytes(), err
+}
+
+func sortFileList(list []interface{}, key string) []interface{} {
+	sort.Slice(list, func(i, j int) bool {
+		if key == "" {
+			return fmt.Sprintf("%v", list[i]) < fmt.Sprintf("%v", list[j])
+		}
+
+		mi, okI := list[i].(map[string]interface{})
+		mj, okJ := list[j].(map[string]interface{})
+
+		if !okI || !okJ {
+			return fmt.Sprintf("%v", list[i]) < fmt.Sprintf("%v", list[j])
+		}
+
+		valI, okI := mi[key]
+		valJ, okJ := mj[key]
+
+		if !okI || !okJ || valI == nil || valJ == nil {
+			return fmt.Sprintf("%v", list[i]) < fmt.Sprintf("%v", list[j])
+		}
+
+		return fmt.Sprintf("%v", valI) < fmt.Sprintf("%v", valJ)
+	})
+	return list
 }

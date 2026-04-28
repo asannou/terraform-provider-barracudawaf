@@ -147,14 +147,42 @@ func resourceCudaWAFAdministratorRoleRead(d *schema.ResourceData, m interface{})
 
 	d.Set("name", name)
 	d.Set("api_privilege", dataItems["api-privilege"])
-	d.Set("authentication_services", dataItems["authentication-services"])
-	d.Set("objects", dataItems["objects"])
-	d.Set("operations", dataItems["operations"])
+	if val, ok := dataItems["authentication-services"]; ok && val != nil {
+		d.Set("authentication_services", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("authentication_services", nil)
+	}
+	if val, ok := dataItems["objects"]; ok && val != nil {
+		d.Set("objects", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("objects", nil)
+	}
+	if val, ok := dataItems["operations"]; ok && val != nil {
+		d.Set("operations", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("operations", nil)
+	}
 	d.Set("role_type", dataItems["role-type"])
-	d.Set("security_policies", dataItems["security-policies"])
-	d.Set("service_groups", dataItems["service-groups"])
-	d.Set("services", dataItems["services"])
-	d.Set("vsites", dataItems["vsites"])
+	if val, ok := dataItems["security-policies"]; ok && val != nil {
+		d.Set("security_policies", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("security_policies", nil)
+	}
+	if val, ok := dataItems["service-groups"]; ok && val != nil {
+		d.Set("service_groups", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("service_groups", nil)
+	}
+	if val, ok := dataItems["services"]; ok && val != nil {
+		d.Set("services", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("services", nil)
+	}
+	if val, ok := dataItems["vsites"]; ok && val != nil {
+		d.Set("vsites", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("vsites", nil)
+	}
 	return nil
 }
 

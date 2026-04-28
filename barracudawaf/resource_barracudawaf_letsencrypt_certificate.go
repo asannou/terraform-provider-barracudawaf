@@ -122,10 +122,12 @@ func resourceCudaWAFLetsEncryptCertificateRead(d *schema.ResourceData, m interfa
 	for tfKey, apiKey := range payload {
 		if val, ok := dataItems[apiKey]; ok && val != nil {
 			if reflect.TypeOf(val).Kind() == reflect.Slice {
-				d.Set(tfKey, val)
+				d.Set(tfKey, sortFileList(val.([]interface{}), ""))
 			} else {
 				d.Set(tfKey, fmt.Sprintf("%v", val))
 			}
+		} else {
+			d.Set(tfKey, nil)
 		}
 	}
 

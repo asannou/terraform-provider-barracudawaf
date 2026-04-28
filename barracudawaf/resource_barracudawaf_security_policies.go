@@ -353,7 +353,7 @@ func resourceCudaWAFSecurityPoliciesRead(d *schema.ResourceData, m interface{}) 
 				apiParam := strings.Replace(param, "_", "-", -1)
 				if val, ok := subDataItems[apiParam]; ok && val != nil {
 					if reflect.TypeOf(val).Kind() == reflect.Slice {
-						subMap[param] = val
+						subMap[param] = sortFileList(val.([]interface{}), "")
 					} else {
 						subMap[param] = fmt.Sprintf("%v", val)
 					}
@@ -362,8 +362,18 @@ func resourceCudaWAFSecurityPoliciesRead(d *schema.ResourceData, m interface{}) 
 			subResourceList = append(subResourceList, subMap)
 		}
 
+		sortKey := ""
+		for _, param := range subResourceParams {
+			if param == "name" {
+				sortKey = "name"
+				break
+			}
+		}
+
 		if len(subResourceList) > 0 {
-			d.Set(subResource, subResourceList)
+			d.Set(subResource, sortFileList(subResourceList, sortKey))
+		} else {
+			d.Set(subResource, nil)
 		}
 	}
 

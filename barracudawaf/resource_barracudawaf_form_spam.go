@@ -111,8 +111,16 @@ func resourceCudaWAFFormSpamRead(d *schema.ResourceData, m interface{}) error {
 	d.Set("action_url", dataItems["action-url"])
 	d.Set("minimum_form_fill_time", fmt.Sprintf("%v", dataItems["minimum-form-fill-time"]))
 	d.Set("mode", dataItems["mode"])
-	d.Set("parameter_class", dataItems["parameter-class"])
-	d.Set("parameter_name", dataItems["parameter-name"])
+	if val, ok := dataItems["parameter-class"]; ok && val != nil {
+		d.Set("parameter_class", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("parameter_class", nil)
+	}
+	if val, ok := dataItems["parameter-name"]; ok && val != nil {
+		d.Set("parameter_name", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("parameter_name", nil)
+	}
 	d.Set("status", dataItems["status"])
 
 	return nil

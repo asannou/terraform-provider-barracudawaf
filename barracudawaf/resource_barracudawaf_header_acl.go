@@ -112,11 +112,23 @@ func resourceCudaWAFHeaderACLRead(d *schema.ResourceData, m interface{}) error {
 
 	d.Set("name", name)
 	d.Set("header_name", dataItems["header-name"])
-	d.Set("blocked_attack_types", dataItems["blocked-attack-types"])
+	if val, ok := dataItems["blocked-attack-types"]; ok && val != nil {
+		d.Set("blocked_attack_types", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("blocked_attack_types", nil)
+	}
 	d.Set("comments", dataItems["comments"])
-	d.Set("custom_blocked_attack_types", dataItems["custom-blocked-attack-types"])
+	if val, ok := dataItems["custom-blocked-attack-types"]; ok && val != nil {
+		d.Set("custom_blocked_attack_types", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("custom_blocked_attack_types", nil)
+	}
 	d.Set("denied_metachars", dataItems["denied-metachars"])
-	d.Set("exception_patterns", dataItems["exception-patterns"])
+	if val, ok := dataItems["exception-patterns"]; ok && val != nil {
+		d.Set("exception_patterns", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("exception_patterns", nil)
+	}
 	d.Set("max_header_value_length", fmt.Sprintf("%v", dataItems["max-header-value-length"]))
 	d.Set("mode", dataItems["mode"])
 	d.Set("status", dataItems["status"])

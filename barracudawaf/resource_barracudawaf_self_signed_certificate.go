@@ -138,7 +138,13 @@ func resourceCudaWAFSelfSignedCertificateRead(d *schema.ResourceData, m interfac
 
 	for tfKey, apiKey := range payload {
 		if val, ok := dataItems[apiKey]; ok && val != nil {
-			d.Set(tfKey, fmt.Sprintf("%v", val))
+			if reflect.TypeOf(val).Kind() == reflect.Slice {
+				d.Set(tfKey, sortFileList(val.([]interface{}), ""))
+			} else {
+				d.Set(tfKey, fmt.Sprintf("%v", val))
+			}
+		} else {
+			d.Set(tfKey, nil)
 		}
 	}
 
