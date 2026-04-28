@@ -223,10 +223,12 @@ func resourceCudaWAFContentRuleServersRead(d *schema.ResourceData, m interface{}
 	for tfKey, apiKey := range payload {
 		if val, ok := dataItems[apiKey]; ok && val != nil {
 			if reflect.TypeOf(val).Kind() == reflect.Slice {
-				d.Set(tfKey, val)
+				d.Set(tfKey, sortFileList(val.([]interface{}), ""))
 			} else {
 				d.Set(tfKey, fmt.Sprintf("%v", val))
 			}
+		} else {
+			d.Set(tfKey, nil)
 		}
 	}
 
@@ -255,7 +257,7 @@ func resourceCudaWAFContentRuleServersRead(d *schema.ResourceData, m interface{}
 				apiParam := strings.Replace(param, "_", "-", -1)
 				if val, ok := subDataItems[apiParam]; ok && val != nil {
 					if reflect.TypeOf(val).Kind() == reflect.Slice {
-						subMap[param] = val
+						subMap[param] = sortFileList(val.([]interface{}), "")
 					} else {
 						subMap[param] = fmt.Sprintf("%v", val)
 					}
@@ -264,8 +266,18 @@ func resourceCudaWAFContentRuleServersRead(d *schema.ResourceData, m interface{}
 			subResourceList = append(subResourceList, subMap)
 		}
 
+		sortKey := ""
+		for _, param := range subResourceParams {
+			if param == "name" {
+				sortKey = "name"
+				break
+			}
+		}
+
 		if len(subResourceList) > 0 {
-			d.Set(subResource, subResourceList)
+			d.Set(subResource, sortFileList(subResourceList, sortKey))
+		} else {
+			d.Set(subResource, nil)
 		}
 	}
 

@@ -104,8 +104,16 @@ func resourceCudaWAFAccessRuleRead(d *schema.ResourceData, m interface{}) error 
 	}
 
 	d.Set("name", name)
-	d.Set("attribute_names", dataItems["attribute-names"])
-	d.Set("attribute_values", dataItems["attribute-values"])
+	if val, ok := dataItems["attribute-names"]; ok && val != nil {
+		d.Set("attribute_names", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("attribute_names", nil)
+	}
+	if val, ok := dataItems["attribute-values"]; ok && val != nil {
+		d.Set("attribute_values", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("attribute_values", nil)
+	}
 
 	return nil
 }

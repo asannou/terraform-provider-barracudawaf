@@ -213,19 +213,71 @@ func resourceCudaWAFCSPPolicyRead(d *schema.ResourceData, m interface{}) error {
 	d.Set("csp_policy_name", name)
 	d.Set("status", dataItems["status"])
 	d.Set("csp_mode", dataItems["csp-mode"])
-	d.Set("default_src", dataItems["default-src"])
-	d.Set("script_src", dataItems["script-src"])
-	d.Set("style_src", dataItems["style-src"])
-	d.Set("img_src", dataItems["img-src"])
-	d.Set("connect_src", dataItems["connect-src"])
-	d.Set("font_src", dataItems["font-src"])
-	d.Set("object_src", dataItems["object-src"])
-	d.Set("media_src", dataItems["media-src"])
-	d.Set("frame_src", dataItems["frame-src"])
-	d.Set("child_src", dataItems["child-src"])
-	d.Set("form_action", dataItems["form-action"])
-	d.Set("frames_ancestors", dataItems["frames-ancestors"])
-	d.Set("base_uri", dataItems["base-uri"])
+	if val, ok := dataItems["default-src"]; ok && val != nil {
+		d.Set("default_src", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("default_src", nil)
+	}
+	if val, ok := dataItems["script-src"]; ok && val != nil {
+		d.Set("script_src", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("script_src", nil)
+	}
+	if val, ok := dataItems["style-src"]; ok && val != nil {
+		d.Set("style_src", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("style_src", nil)
+	}
+	if val, ok := dataItems["img-src"]; ok && val != nil {
+		d.Set("img_src", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("img_src", nil)
+	}
+	if val, ok := dataItems["connect-src"]; ok && val != nil {
+		d.Set("connect_src", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("connect_src", nil)
+	}
+	if val, ok := dataItems["font-src"]; ok && val != nil {
+		d.Set("font_src", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("font_src", nil)
+	}
+	if val, ok := dataItems["object-src"]; ok && val != nil {
+		d.Set("object_src", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("object_src", nil)
+	}
+	if val, ok := dataItems["media-src"]; ok && val != nil {
+		d.Set("media_src", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("media_src", nil)
+	}
+	if val, ok := dataItems["frame-src"]; ok && val != nil {
+		d.Set("frame_src", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("frame_src", nil)
+	}
+	if val, ok := dataItems["child-src"]; ok && val != nil {
+		d.Set("child_src", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("child_src", nil)
+	}
+	if val, ok := dataItems["form-action"]; ok && val != nil {
+		d.Set("form_action", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("form_action", nil)
+	}
+	if val, ok := dataItems["frames-ancestors"]; ok && val != nil {
+		d.Set("frames_ancestors", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("frames_ancestors", nil)
+	}
+	if val, ok := dataItems["base-uri"]; ok && val != nil {
+		d.Set("base_uri", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("base_uri", nil)
+	}
 	d.Set("report_uri", dataItems["report-uri"])
 	d.Set("upgrade_unsecure_req", dataItems["upgrade-unsecure-req"])
 	d.Set("block_all_mixed_content", dataItems["mixed-box-content"])

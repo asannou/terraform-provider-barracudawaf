@@ -166,14 +166,30 @@ func resourceCudaWAFJSONProfileRead(d *schema.ResourceData, m interface{}) error
 	d.Set("name", name)
 	d.Set("host_match", dataItems["host-match"])
 	d.Set("url_match", dataItems["url-match"])
-	d.Set("method", dataItems["method"])
+	if val, ok := dataItems["method"]; ok && val != nil {
+		d.Set("method", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("method", nil)
+	}
 	d.Set("status", dataItems["status"])
 	d.Set("mode", dataItems["mode"])
 	d.Set("json_policy", dataItems["json-policy"])
 	d.Set("validate_key", dataItems["validate-key"])
-	d.Set("ignore_keys", dataItems["ignore-keys"])
-	d.Set("allowed_content_types", dataItems["allowed-content-types"])
-	d.Set("exception_patterns", dataItems["exception-patterns"])
+	if val, ok := dataItems["ignore-keys"]; ok && val != nil {
+		d.Set("ignore_keys", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("ignore_keys", nil)
+	}
+	if val, ok := dataItems["allowed-content-types"]; ok && val != nil {
+		d.Set("allowed_content_types", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("allowed_content_types", nil)
+	}
+	if val, ok := dataItems["exception-patterns"]; ok && val != nil {
+		d.Set("exception_patterns", sortFileList(val.([]interface{}), ""))
+	} else {
+		d.Set("exception_patterns", nil)
+	}
 	d.Set("comment", dataItems["comment"])
 	return nil
 }
