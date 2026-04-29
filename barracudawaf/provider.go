@@ -84,6 +84,8 @@ func Provider() *schema.Provider {
 			"barracudawaf_system_export_log_settings": resourceCudaWAFSystemExportLogSettings(),
 			"barracudawaf_system_export_log_filters":  resourceCudaWAFSystemExportLogFilters(),
 			"barracudawaf_system":                    resourceCudaWAFSystem(),
+			"barracudawaf_custom_attack_type":         resourceCudaWAFCustomAttackType(),
+			"barracudawaf_attack_type_pattern":        resourceCudaWAFAttackTypePattern(),
 		},
 	}
 
