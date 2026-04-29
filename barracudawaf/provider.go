@@ -83,6 +83,7 @@ func Provider() *schema.Provider {
 			"barracudawaf_web_scraping_policy":        resourceCudaWAFWebScrapingPolicy(),
 			"barracudawaf_system_export_log_settings": resourceCudaWAFSystemExportLogSettings(),
 			"barracudawaf_system_export_log_filters":  resourceCudaWAFSystemExportLogFilters(),
+			"barracudawaf_system":                    resourceCudaWAFSystem(),
 		},
 	}
 
